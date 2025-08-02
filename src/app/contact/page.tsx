@@ -1,22 +1,22 @@
-import HomePage from "@/page-partials/homepage";
 import { HOST } from "@/constants";
-import { homeKeyword } from "@/data/keywords";
+import { contactKeyword } from "@/data/keywords";
 import { webPageSchema } from "@/seo-utils/webPageSchema";
 import { createMetaData } from "@/seo-utils/CommonMeta";
 import { organizationSchema } from "@/seo-utils/organizationSchema";
 import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
 import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
+import ContactPage from "@/page-partials/contact/page";
 
 const url = `${HOST}`;
-const title = `Artificial Mufti: Your AI Companion for Islamic Guidance`;
-const description = `The Artificial Mufti is an AI-powered assistant providing thoughtful, humorous, and well-referenced guidance on Islamic topics. Blending traditional wisdom with modern technology, we make learning accessible and engaging.`;
-const keywords = homeKeyword;
+const title = `Contact Us - Artificial Mufti`;
+const description = `Have a question, feedback, or a partnership idea? Get in touch with the team behind the Artificial Mufti. We're here to listen and help you on your journey.`;
+const keywords = contactKeyword;
 
 export const metadata = {
   ...createMetaData({ title, description, keywords, url }),
 };
 
-export default function Home() {
+export default function Contact() {
   return (
     <>
       <script
@@ -37,7 +37,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
       />
-      <HomePage />
+      <ContactPage />
     </>
   );
 }

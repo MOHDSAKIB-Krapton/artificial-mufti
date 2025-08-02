@@ -1,22 +1,22 @@
-import HomePage from "@/page-partials/homepage";
 import { HOST } from "@/constants";
-import { homeKeyword } from "@/data/keywords";
+import { comingSoonKeyword } from "@/data/keywords";
 import { webPageSchema } from "@/seo-utils/webPageSchema";
 import { createMetaData } from "@/seo-utils/CommonMeta";
 import { organizationSchema } from "@/seo-utils/organizationSchema";
 import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
 import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
+import ComingSoonPage from "@/page-partials/coming-soon-page";
 
 const url = `${HOST}`;
-const title = `Artificial Mufti: Your AI Companion for Islamic Guidance`;
-const description = `The Artificial Mufti is an AI-powered assistant providing thoughtful, humorous, and well-referenced guidance on Islamic topics. Blending traditional wisdom with modern technology, we make learning accessible and engaging.`;
-const keywords = homeKeyword;
+const title = `Artificial Mufti: The Future of Islamic Guidance (Coming Soon)`;
+const description = `The Artificial Mufti is launching soon! Our AI-powered assistant will provide thoughtful, humorous, and well-referenced guidance on Islamic topics. Stay tuned to be the first to experience the future of digital Islamic learning.`;
+const keywords = comingSoonKeyword;
 
 export const metadata = {
   ...createMetaData({ title, description, keywords, url }),
 };
 
-export default function Home() {
+export default function ComingSoon() {
   return (
     <>
       <script
@@ -37,7 +37,7 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
       />
-      <HomePage />
+      <ComingSoonPage />
     </>
   );
 }

@@ -1,26 +1,143 @@
-@import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text:wght@400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@theme {
+  --color-background: #FEFCF8;
+  --color-foreground: #2C2B28;
+  --color-card: #F7F4EF;
+  --color-card-foreground: #2C2B28;
+  --color-popover: #F7F4EF;
+  --color-popover-foreground: #2C2B28;
+  --color-primary: #C29B61;
+  --color-primary-foreground: #2C2B28;
+  --color-secondary: #6B7A5A;
+  --color-secondary-foreground: #FEFCF8;
+  --color-muted: #F7F4EF;
+  --color-muted-foreground: #6B7A5A;
+  --color-accent: #C29B61;
+  --color-accent-foreground: #FEFCF8;
+  --color-destructive: #B91C1C;
+  --color-destructive-foreground: #FEFCF8;
+  --color-border: #E8E1D5;
+  --color-input: #F7F4EF;
+  --color-ring: #C29B61;
+  --color-chart-1: #6B7A5A;
+  --color-chart-2: #C29B61;
+  --color-chart-3: #2C2B28;
+  --color-chart-4: #E8E1D5;
+  --color-chart-5: #F7F4EF;
+  --color-sidebar: #F7F4EF;
+  --color-sidebar-foreground: #6B7A5A;
+  --color-sidebar-primary: #C29B61;
+  --color-sidebar-primary-foreground: #FEFCF8;
+  --color-sidebar-accent: #E8E1D5;
+  --color-sidebar-accent-foreground: #2C2B28;
+  --color-sidebar-border: #E8E1D5;
+  --color-sidebar-ring: #C29B61;
+
+  --font-serif: 'Crimson Text', serif;
+  --font-sans: 'Inter', sans-serif;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+@layer base {
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: #E8E1D5;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+@layer base {
+  :root {
+    --background: #FEFCF8;
+    --foreground: #2C2B28;
+    --card: #F7F4EF;
+    --card-foreground: #2C2B28;
+    --popover: #F7F4EF;
+    --popover-foreground: #2C2B28;
+    --primary: #C29B61;
+    --primary-foreground: #2C2B28;
+    --secondary: #6B7A5A;
+    --secondary-foreground: #FEFCF8;
+    --muted: #F7F4EF;
+    --muted-foreground: #6B7A5A;
+    --accent: #C29B61;
+    --accent-foreground: #FEFCF8;
+    --destructive: #B91C1C;
+    --destructive-foreground: #FEFCF8;
+    --border: #E8E1D5;
+    --input: #F7F4EF;
+    --ring: #C29B61;
+    --chart-1: #6B7A5A;
+    --chart-2: #C29B61;
+    --chart-3: #2C2B28;
+    --chart-4: #E8E1D5;
+    --chart-5: #F7F4EF;
+    --radius: 0.5rem;
+    --sidebar-background: #F7F4EF;
+    --sidebar-foreground: #6B7A5A;
+    --sidebar-primary: #C29B61;
+    --sidebar-primary-foreground: #FEFCF8;
+    --sidebar-accent: #E8E1D5;
+    --sidebar-accent-foreground: #2C2B28;
+    --sidebar-border: #E8E1D5;
+    --sidebar-ring: #C29B61;
+  }
+}
+
+@layer utilities {
+  body {
+    font-family: Inter, sans-serif;
+    line-height: 1.6;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: 'Crimson Text', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+h1 {
+  font-size: 3rem;
+}
+
+h2 {
+  font-size: 2.5rem;
+}
+
+h3 {
+  font-size: 2rem;
+}
+
+h4 {
+  font-size: 1.75rem;
+}
+
+h5 {
+  font-size: 1.5rem;
+}
+
+h6 {
+  font-size: 1.25rem;
 }
