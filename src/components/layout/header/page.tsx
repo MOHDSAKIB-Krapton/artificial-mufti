@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { Dialog, DialogPanel } from "@headlessui/react";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { APP_TITLE } from "@/constants";
+import { useIsAuthenticated } from "@/hooks/use-isAuthenticated";
 
 const navigation = [
   { name: "Product", href: "/product" },
@@ -13,6 +14,9 @@ const navigation = [
 ];
 
 export default function Header() {
+  // Hook to check globally if user is authenticated or not.
+  const isAuthenticated = useIsAuthenticated();
+
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -66,14 +70,16 @@ export default function Header() {
               </a>
             ))}
           </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <a
-              href="/coming-soon"
-              className="text-sm/6 font-semibold text-[var(--foreground)]"
-            >
-              Join Now <span aria-hidden="true">&rarr;</span>
-            </a>
-          </div>
+          {!isAuthenticated && (
+            <div className="hidden lg:flex lg:flex-1 lg:justify-end">
+              <a
+                href="/coming-soon"
+                className="text-sm/6 font-semibold text-[var(--foreground)]"
+              >
+                Join Now <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          )}
         </nav>
         <Dialog
           open={mobileMenuOpen}
@@ -111,14 +117,16 @@ export default function Header() {
                     </a>
                   ))}
                 </div>
-                <div className="py-6">
-                  <a
-                    href="/coming-soon"
-                    className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-[var(--foreground)] hover:bg-[var(--muted)]"
-                  >
-                    Join Now
-                  </a>
-                </div>
+                {!isAuthenticated && (
+                  <div className="py-6">
+                    <a
+                      href="/coming-soon"
+                      className="-mx-3 block rounded-lg px-3 py-2.5 text-base/7 font-semibold text-[var(--foreground)] hover:bg-[var(--muted)]"
+                    >
+                      Join Now
+                    </a>
+                  </div>
+                )}
               </div>
             </div>
           </DialogPanel>

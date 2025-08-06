@@ -3,6 +3,7 @@ import "./globals.css";
 import Script from "next/script";
 import ErrorReporter from "@/components/ErrorReporter";
 import Layout from "@/components/layout/page";
+import { AuthProvider } from "@/context/provider/auth.provider";
 
 export const metadata: Metadata = {
   title: "Artificial Mufti",
@@ -34,7 +35,9 @@ export default function RootLayout({
           data-debug="true"
           data-custom-data='{"appName": "Artificial Mufti", "version": "1.0.0", "greeting": "hi"}'
         />
-        <Layout>{children}</Layout>
+        <AuthProvider>
+          <Layout>{children}</Layout>
+        </AuthProvider>
       </body>
     </html>
   );
