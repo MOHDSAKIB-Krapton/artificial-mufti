@@ -2,14 +2,15 @@
 
 import { useEffect, useState } from "react";
 import { User } from "@supabase/supabase-js";
-import { supabase } from "@/lib/supabase/client";
+import { createClient } from "@/utils/supabase/client";
+import { redirect } from "next/navigation";
+import { logout } from "@/app/(auth)/signin/action";
 
 export default function Profile() {
+  const supabase = createClient();
+
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
-
-  // You should be using createClient() as the supabase constant doesn't exist
-  // in your client file. We'll create the client instance inside the effect.
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -24,8 +25,16 @@ export default function Profile() {
   }, []);
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
-    setUser(null);
+    try {
+      setLoading(true);
+      await logout();
+
+      setUser(null);
+      redirect("/");
+    } catch (err) {
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (loading) {
@@ -33,12 +42,11 @@ export default function Profile() {
   }
 
   if (!user) {
-    // This state should theoretically not be reached due to middleware protection
-    return <p>Error: Not signed in</p>;
+    return <p>Logged out</p>;
   }
 
   return (
-    <div>
+    <div className="min-h-screen justify-center items-center flex flex-1 flex-col">
       <p>Signed in as {user.email}</p>
       <button onClick={handleSignOut}>Sign Out</button>
     </div>

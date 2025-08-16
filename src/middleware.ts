@@ -1,53 +1,74 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { createServerClient } from "@supabase/ssr";
 
 export async function middleware(request: NextRequest) {
-  try {
-    const supabase = await createServerClient();
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
+  const response = NextResponse.next();
 
-    // Define the paths that are publicly accessible without authentication.
-    // The homepage ("/") should be a public path.
-    const publicPaths = [
-      "/",
-      "/coming-soon",
-      "/contact",
-      "/marketplace",
-      "/pricing",
-      "/product",
-      "/terms",
-      "/auth/signin",
-      "/auth/signup",
-      "/auth/callback",
-      "/error",
-    ];
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() {
+          return request.cookies.getAll();
+        },
+        setAll(cookiesToSet) {
+          cookiesToSet.forEach(({ name, value }) =>
+            request.cookies.set(name, value)
+          );
+        },
+      },
+    }
+  );
 
-    // Check if the current path is in our list of public paths.
-    const isPublicPath = publicPaths.includes(request.nextUrl.pathname);
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const { pathname } = request.nextUrl;
 
-    // Condition 1: User is authenticated and tries to access a public auth page.
-    // Redirect them to their profile.
-    if (user && isPublicPath) {
-      return NextResponse.redirect(new URL("/profile", request.url));
+  const publicRoutes = [
+    "/signin",
+    "/auth/callback",
+    "/",
+    "/coming-soon",
+    "/contact",
+    "/error",
+    "/marketplace",
+    "/pricing",
+    "/product",
+    "/terms",
+  ];
+  const isPublicRoute = publicRoutes.includes(pathname);
+
+  if (isPublicRoute && user) {
+    if (pathname === "/signin") {
+      const url = request.nextUrl.clone();
+      const next = request.nextUrl.searchParams.get("next") || "/profile";
+      url.pathname = next.startsWith("/") ? next : "/profile";
+      url.search = "";
+      return NextResponse.redirect(url);
     }
 
-    // Condition 2: User is NOT authenticated and tries to access a protected page.
-    // A protected page is any page that is NOT a public path.
-    if (!user && !isPublicPath) {
-      return NextResponse.redirect(new URL("/auth/signin", request.url));
-    }
-
-    // Otherwise, let the request proceed.
     return NextResponse.next();
-  } catch (error) {
-    console.log("Allowing request to proceed.");
-    return NextResponse.redirect(new URL("/auth/signin", request.url));
   }
+  if (!isPublicRoute && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    return NextResponse.redirect(url);
+  }
+
+  return response;
 }
 
-// The matcher configuration remains the same.
 export const config = {
-  matcher: ["/((?!_next/static|_next/image|favicon.ico).*)"],
+  matcher: [
+    /*
+     * Match all request paths except for the ones starting with:
+     * - _next/static (static files)
+     * - _next/image (image optimization files)
+     * - favicon.ico (favicon file)
+     * Feel free to modify this pattern to include more paths.
+     */
+    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
+  ],
 };

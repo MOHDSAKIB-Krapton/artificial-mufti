@@ -1,4 +1,4 @@
-import { supabase } from "@/lib/supabase/client";
+import { useIsAuthenticated } from "@/hooks/use-isAuthenticated";
 import { redirect } from "next/navigation";
 
 export default async function ProtectedLayout({
@@ -6,13 +6,15 @@ export default async function ProtectedLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const {
-    data: { session },
-  } = await supabase.auth.getSession();
+  const isAuthenticated = useIsAuthenticated();
 
-  if (!session) {
-    redirect("/auth/signin");
+  if (!isAuthenticated) {
+    redirect("/signin");
   }
 
-  return <>{children}</>;
+  return (
+    <div className="min-h-screen flex justify-center items-center">
+      {children}
+    </div>
+  );
 }
