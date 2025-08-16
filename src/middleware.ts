@@ -37,6 +37,10 @@ export async function middleware(request: NextRequest) {
     "/pricing",
     "/product",
     "/terms",
+
+    // TESTING ONLY
+    "/chat",
+    "/profile",
   ];
   const isPublicRoute = publicRoutes.includes(pathname);
 

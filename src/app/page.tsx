@@ -6,6 +6,7 @@ import { createMetaData } from "@/seo-utils/CommonMeta";
 import { organizationSchema } from "@/seo-utils/organizationSchema";
 import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
 import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
+import Layout from "@/components/layout/page";
 
 const url = `${HOST}`;
 const title = `Artificial Mufti: Your AI Companion for Islamic Guidance`;
@@ -37,7 +38,9 @@ export default function Home() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
       />
-      <HomePage />
+      <Layout>
+        <HomePage />
+      </Layout>
     </>
   );
 }
