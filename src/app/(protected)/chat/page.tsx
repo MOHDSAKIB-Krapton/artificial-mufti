@@ -8,20 +8,15 @@ import {
   ChevronRight,
   Clock,
   Copy,
-  Download,
-  Edit3,
   Loader2,
   Menu,
   Mic,
-  MoreVertical,
   Paperclip,
   Pin,
   Plus,
   Search,
   Send,
   Share2,
-  Sparkles,
-  Trash2,
   User,
 } from "lucide-react";
 import { useEffect, useMemo, useRef, useState } from "react";
@@ -785,7 +780,7 @@ export default function ProtectedChatPage() {
           className="md:hidden flex flex-col fixed z-40 inset-y-0 left-0 w-80 border-r border-border bg-background"
           aria-hidden={!open}
         >
-          <div className="flex items-center gap-2 px-3 py-3 border-b border-border/60">
+          <div className="flex items-center gap-2 px-3 py-6 md:py-3 border-b border-border/60">
             <Button
               variant="ghost"
               size="icon"
