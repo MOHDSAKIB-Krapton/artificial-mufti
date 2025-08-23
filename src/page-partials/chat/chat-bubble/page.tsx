@@ -4,6 +4,8 @@ import { ChatMessage } from "@/types/chat";
 import { Bot, Check, Clock, Copy, User } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
 
 export default function ChatBubble({ message }: { message: ChatMessage }) {
   const [isCopied, setIsCopied] = useState(false);
@@ -80,7 +82,12 @@ export default function ChatBubble({ message }: { message: ChatMessage }) {
              }
             `}
         >
-          {message.content}
+          {/* {message.content} */}
+          <div className="prose prose-sm dark:prose-invert max-w-none">
+            <ReactMarkdown remarkPlugins={[remarkGfm]}>
+              {message.content || " "}
+            </ReactMarkdown>
+          </div>
         </div>
         <div
           className={`

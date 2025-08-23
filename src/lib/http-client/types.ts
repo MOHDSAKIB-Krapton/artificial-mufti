@@ -6,3 +6,9 @@ export interface ApiResponse<T> {
   data: T | null;
   error: string | null;
 }
+
+export interface BackendEnvelope<D> {
+  success: boolean;
+  data: D | null;
+  error: any;
+}

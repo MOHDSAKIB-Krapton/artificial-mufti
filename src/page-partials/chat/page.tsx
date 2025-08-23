@@ -13,14 +13,21 @@ import Composer from "./composer/page";
 import { Socket } from "socket.io-client";
 import { getSocket } from "@/lib/socket-client";
 import ChatServices from "@/services/chat/chat.service";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { mdComponents } from "@/components/react-markdown/component/page";
 
 export default function ChatPage() {
   const [socketState, setSocketState] = useState<Socket | null>(null);
+  const socketRef = useRef<Socket | null>(null);
 
   const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
   const [sidebarPinned, setSidebarPinned] = useState(true); // desktop width state
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [activeId, setActiveId] = useState<string>("");
+
+  const [streamingContent, setStreamingContent] = useState<string>("");
+
   const active = useMemo(
     () => conversations?.find((c) => c.id === activeId)!,
     [activeId, conversations]
@@ -43,117 +50,145 @@ export default function ChatPage() {
   useEffect(() => {
     (async () => {
       try {
-        console.log("Trying to connect to socket inside useeffect");
-        socket = await getSocket();
-        setSocketState(socket);
+        if (!socketRef.current) {
+          const s = await getSocket();
+          socketRef.current = s;
+          setSocketState(s);
 
-        socket.on("connect", () => {
-          console.log("Connected to socket:", socket);
-        });
+          s.on("connect", () => {
+            console.log("Connected to socket:", s);
+          });
 
-        socket.on("server_chunk", (data: { role: Role; content: string }) => {
-          console.log("data => ", data);
-          setIsTyping(false);
-          addMessage(data.role, data.content);
-        });
+          s.on("server_chunk", (data: { role: Role; content: string }) => {
+            console.log("data => ", data);
+            // setIsTyping(false);
+            // addMessage(data.role, data.content);
+            setStreamingContent((prevContent) => prevContent + data.content);
+          });
 
-        socket.on("error", (e) => {
-          console.error("Socket error:", e);
-          console.error("❌ Socket connection failed:", e);
-        });
-        socket.on("dicconnect", (e) => {
-          console.error("Socket disconnected:", e);
-          console.error("❌ Socket connection disconnected:", e);
-        });
+          s.on(
+            "stream_end",
+            (data: {
+              conversation_id: string;
+              role: Role;
+              content: string;
+              created_at: string;
+              title?: string; // in case server sends a title for new convs
+            }) => {
+              setConversations((prev) => {
+                const exists = prev.some((c) => c.id === data.conversation_id);
+                if (!exists) {
+                  // create it on the fly if server made a new conversation
+                  const newConv: Conversation = {
+                    id: data.conversation_id,
+                    title: data.title || "New chat",
+                    updated_at: "Just now",
+                    messages: [],
+                    pinned: false,
+                    created_at: new Date().toISOString(),
+                  };
+                  // also make it active so future sends use the correct id
+                  setActiveId(data.conversation_id);
+                  return [newConv, ...prev];
+                }
+                return prev;
+              });
+
+              // When the stream ends, add the full content to the conversation and clear the streaming state
+              setIsTyping(false);
+              setConversations((prev) =>
+                prev.map((c) =>
+                  c.id !== data.conversation_id
+                    ? c
+                    : {
+                        ...c,
+                        messages: [
+                          ...c.messages,
+                          {
+                            id: crypto.randomUUID(),
+                            role: data.role,
+                            content: data.content,
+                            createdAt: data.created_at,
+                          },
+                        ],
+                      }
+                )
+              );
+              setStreamingContent(""); // Clear the streaming state
+            }
+          );
+
+          s.on("error", (e) => {
+            console.error("Socket error:", e);
+            console.error("❌ Socket connection failed:", e);
+          });
+          s.on("disconnect", (e) => {
+            console.error("Socket disconnected:", e);
+            console.error("❌ Socket connection disconnected:", e);
+          });
+        }
       } catch (err) {
         console.error("Failed to connect socket:", err);
       }
     })();
 
     return () => {
-      if (socketState) {
-        socketState.disconnect();
+      const s = socketRef.current;
+      if (s) {
+        s.off("connect");
+        s.off("server_chunk");
+        s.off("stream_end");
+        s.off("error");
+        s.off("disconnect");
+        // optional: don't fully disconnect if you want sticky connection
+        // s.disconnect();
+        // socketRef.current = null;
       }
     };
   }, []);
 
-  function createMuftiDemo(
-    addMessage: (role: Role, content: string) => void,
-    index: number
-  ) {
-    const assistantScript: string[] = [
-      "Short answer: No, it's Haram. Long answer: Let's talk.",
-      `Because crypto is like digital air. It has no real asset, no stability, and no backing. It's just speculation, which is similar to gambling.
-
-Qur'an says:
-> "Allah has permitted trade and forbidden interest." (Surah al-Baqarah 2:275)
-> "Wine, gambling, idols and divination are filthy works of Shayṭān, so avoid them." (Surah al-Mā'idah 5:90)`,
-      `That's true. Halal risk involves effort and real value. Crypto risk, however, is pure gamble with no intrinsic value. That’s *maysir* (gambling), not business.
-
-Reference: Radd al-Muḥtār, Kitāb al-Ḥaẓr wa’l-Ibāḥa (9/577)
-Fatwa Darul Uloom Deoband (Fatwa no. 5709-595/N=11/1446)`,
-      `That’s exactly the trap. Sometimes it goes up, and sometimes it crashes. The Hadith also warns against dealing with usury, which is a component of such transactions.
-
-Hadith:
-"Rasulullah ﷺ cursed the one who consumes interest, the one who gives it, the one who records it, and its witnesses." (Muslim, Kitāb al-Buyūʿ)
-
-Al-Qamār ḥaqīqah wa aḥkāmuhu – Dr. Sulaymān al-Mulḥim (p. 74-75)`,
-      `The final verdict is that crypto trading is Haram. It has elements of gambling and usury. Halal wealth might be slower, but it is pure and blessed.
-
-Qur’an Reminder:
-> "Do not consume one another’s wealth unjustly." (Surah al-Baqarah 2:188)
-
-References used:
-* Qur’an (2:275, 5:90, 2:188)
-* Ḥadīth: Ṣaḥīḥ Muslim (Kitāb al-Buyūʿ)
-* Fatwa: Darul Uloom Deoband, No. 633886
-* Radd al-Muḥtār (Ibn ‘Ābidīn, 9/577)
-* Al-Qamār ḥaqīqah wa aḥkāmuhu, Dr. Sulaymān al-Mulḥim`,
-    ];
-
-    return function respondLikeMufti() {
-      if (index >= assistantScript.length) return;
-
-      setIsTyping(true);
-
-      // setTimeout(() => {
-      //   // Now replace the "typing" with real message
-      //   setIsTyping(false);
-      //   addMessage("assistant", assistantScript[index]);
-      //   setIndex((prev) => prev + 1);
-      // }, 2000);
-
-      typingTimerRef.current = window.setTimeout(() => {
-        addMessage("assistant", assistantScript[index]);
-        setIndex((i) => i + 1);
-        setIsTyping(false);
-      }, 2000);
-    };
-  }
-
-  // Derived meta for sidebar
-  // const sidebarList = useMemo<ConversationMeta[]>(
-  //   () =>
-  //     conversations
-  //       .map(({ id, title, updatedAt, pinned }) => ({
-  //         id,
-  //         title,
-  //         updatedAt,
-  //         pinned,
-  //       }))
-  //       .sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned)),
-  //   [conversations]
-  // );
-
   useEffect(() => {
     getAllConversations();
   }, []);
+
+  useEffect(() => {
+    if (!activeId) {
+      console.log("Returning Beacuse no activeId");
+      return;
+    }
+
+    console.log("activeId => ", activeId);
+    getMessagesOfConversation(activeId);
+  }, [activeId]);
 
   const getAllConversations = async () => {
     try {
       const data = await ChatServices.getAllConversations();
       setConversations(data);
       console.log("Conversations => ", data);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  const getMessagesOfConversation = async (conversation_id: string) => {
+    try {
+      const data = await ChatServices.getMessagesOfConversation(
+        conversation_id
+      );
+      console.log("Messages =>", data);
+
+      setConversations((prev) =>
+        prev.map((c) =>
+          c.id === conversation_id
+            ? {
+                ...c,
+                // reverse so oldest messages appear at top
+                messages: [...data].reverse(),
+              }
+            : c
+        )
+      );
     } catch (err) {
       console.log(err);
     }
@@ -189,7 +224,7 @@ References used:
     const newConv: Conversation = {
       id,
       title: "New chat",
-      updatedAt: "Just now",
+      updated_at: "Just now",
       messages: [
         {
           id: crypto.randomUUID(),
@@ -201,15 +236,12 @@ References used:
           }),
         },
       ],
+      pinned: false,
+      created_at: new Date().toISOString(),
     };
     setConversations((prev) => [newConv, ...prev]);
     setActiveId(id);
   };
-
-  const muftiDemo = useMemo(
-    () => createMuftiDemo(addMessage, index),
-    [addMessage]
-  );
 
   const onSend = async (text: string) => {
     if (!socketState) {
@@ -217,6 +249,8 @@ References used:
     }
 
     addMessage("user", text);
+    setIsTyping(true);
+    setStreamingContent("");
     socketState.emit("client_message", {
       content: text,
       conversation_id: activeId || null,
@@ -292,28 +326,45 @@ References used:
         <main className="min-h-0 flex flex-col flex-1 overflow-y-auto">
           {/* Conversation stream */}
           <div className="mx-auto w-full max-w-4xl flex-1 px-3 pt-6 pb-24">
-            {active?.messages.length === 0 && (
-              <div className="mx-auto mt-10 max-w-md text-center text-muted-foreground">
-                <Bot className="mx-auto mb-2 h-8 w-8 text-primary" />
-                <p>Start your first question below.</p>
-              </div>
-            )}
-            <div className="space-y-5">
-              {active?.messages.map((m) => (
-                <motion.div
-                  key={m.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  <ChatBubble message={m} />
-                </motion.div>
+            {!active?.messages ||
+              (active?.messages.length === 0 && (
+                <div className="mx-auto mt-10 max-w-md text-center text-muted-foreground">
+                  <Bot className="mx-auto mb-2 h-8 w-8 text-primary" />
+                  <p>Start your first question below.</p>
+                </div>
               ))}
+            <div className="space-y-5">
+              {active?.messages &&
+                active?.messages.length > 0 &&
+                active?.messages.map((m) => (
+                  <motion.div
+                    key={m.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{ duration: 0.18 }}
+                  >
+                    <ChatBubble message={m} />
+                  </motion.div>
+                ))}
 
               {isTyping && (
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> Gathering
-                  Authentic answers…
+                <div className="flex flex-col items-center gap-2 text-sm text-muted-foreground">
+                  <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <Loader2 className="h-3.5 w-3.5 animate-spin" /> Gathering
+                    Authentic answers…
+                  </div>
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    {/* <ReactMarkdown remarkPlugins={[remarkGfm]}>
+                      {streamingContent || " "}
+                    </ReactMarkdown> */}
+
+                    <ReactMarkdown
+                      remarkPlugins={[remarkGfm]}
+                      components={mdComponents}
+                    >
+                      {streamingContent || " "}
+                    </ReactMarkdown>
+                  </div>
                 </div>
               )}
               {/* <div className="hidden" aria-hidden>

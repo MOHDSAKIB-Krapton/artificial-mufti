@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
     "/product",
     "/terms",
 
-    // TESTING ONLY
+    // // TESTING ONLY
     // "/chat",
     // "/profile",
   ];

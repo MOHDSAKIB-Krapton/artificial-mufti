@@ -4,14 +4,16 @@ export interface ChatMessage {
   id: string;
   role: Role;
   content: string;
-  createdAt: string; // e.g. "2025-08-16 14:41"
+  createdAt: string;
 }
 
 export interface ConversationMeta {
   id: string;
+  user_id?: string;
   title: string;
-  updatedAt: string;
-  pinned?: boolean;
+  pinned: boolean;
+  updated_at: string;
+  created_at: string;
 }
 
 export interface Conversation extends ConversationMeta {

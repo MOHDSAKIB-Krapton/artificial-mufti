@@ -1,5 +1,5 @@
 import axios, { AxiosResponse, AxiosError } from "axios";
-import { ApiResponse } from "./types";
+import { ApiResponse, BackendEnvelope } from "./types";
 import { getStoredToken } from "@/utils/supabase/token";
 
 /**
@@ -26,19 +26,18 @@ class HttpClient {
   }
 
   private async handleResponse<T>(
-    request: Promise<AxiosResponse<T>>
+    request: Promise<AxiosResponse<BackendEnvelope<T>>>
   ): Promise<ApiResponse<T>> {
     try {
       const response = await request;
+
       return {
         success: true,
-        data: response.data,
+        data: response.data.data,
         error: null,
       };
     } catch (error: any) {
       const formatted = this.formatError(error);
-      console.log("Request failed:", formatted);
-      console.log("error without formatted");
 
       return {
         success: false,
