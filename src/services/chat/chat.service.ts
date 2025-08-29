@@ -1,6 +1,8 @@
 import Http from "@/lib/http-client";
 import { ApiResponse } from "@/lib/http-client/types";
 import { ChatMessage, Conversation } from "@/types/chat";
+import { SseChunk, SseConversation, SseError } from "@/types/sse";
+import { getStoredToken } from "@/utils/supabase/token";
 import toast from "react-hot-toast";
 
 export default class ChatServices {
@@ -44,5 +46,61 @@ export default class ChatServices {
       toast(err.message || "Failed to fetch conversations");
       return [];
     }
+  }
+
+  static async streamChat(
+    prompt: string,
+    conversationId: string = "",
+    onConversationCreated?: (conversation_id: string) => void,
+    onChunk?: (chunk: SseChunk) => void,
+    onEnd?: (fullText: string) => void,
+    onError?: () => void
+  ): Promise<EventSource> {
+    // Extracting token manually for SSE, Since native EventSource does not provides us header token access
+    const token = await getStoredToken();
+
+    const url = new URL(
+      `/api/v1/chat/stream?prompt=${encodeURIComponent(prompt)}`,
+      process.env.NEXT_PUBLIC_BACKEND_BASE_URL
+    );
+
+    if (conversationId) {
+      url.searchParams.set("conversation_id", conversationId);
+    }
+
+    if (token) {
+      url.searchParams.set("token", token);
+    }
+
+    const es = new EventSource(url.toString());
+
+    let fullText = "";
+
+    es.addEventListener("conversation_created", (e) => {
+      const parsed = JSON.parse((e as MessageEvent).data) as SseConversation;
+      onConversationCreated?.(parsed.conversation_id);
+    });
+
+    es.addEventListener("chunk", (e) => {
+      const parsed = JSON.parse((e as MessageEvent).data) as SseChunk;
+      fullText += parsed.content;
+      onChunk?.(parsed);
+    });
+
+    es.addEventListener("end", (e) => {
+      const parsed = JSON.parse((e as MessageEvent).data) as SseChunk;
+      fullText += parsed.content;
+      onEnd?.(fullText);
+      es.close();
+    });
+
+    es.addEventListener("error", (e) => {
+      es.close();
+      const parsed = JSON.parse((e as MessageEvent).data) as SseError;
+      toast(parsed.message || "Something went wrong");
+      onError?.();
+    });
+
+    return es;
   }
 }

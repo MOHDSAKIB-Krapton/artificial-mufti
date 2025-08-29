@@ -1,9 +1,11 @@
 "use client";
 
 import { ChatMessage } from "@/types/chat";
+import { formatDate } from "@/utils/date/IsoToDate";
 import { Bot, Check, Clock, Copy, User } from "lucide-react";
 import Image from "next/image";
 import { useState } from "react";
+import toast from "react-hot-toast";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 
@@ -34,7 +36,7 @@ export default function ChatBubble({ message }: { message: ChatMessage }) {
         document.body.removeChild(ta);
       }
       // optional: show your own toast/snackbar here
-      // toast.success("Copied to clipboard");
+      toast("Copied to clipboard");
     } catch {
       // optional: show error toast
       // toast.error("Failed to copy");
@@ -83,7 +85,7 @@ export default function ChatBubble({ message }: { message: ChatMessage }) {
             `}
         >
           {/* {message.content} */}
-          <div className="prose prose-sm dark:prose-invert max-w-none">
+          <div className="prose prose-sm dark:prose-invert max-w-none overflow-x-scroll">
             <ReactMarkdown remarkPlugins={[remarkGfm]}>
               {message.content || " "}
             </ReactMarkdown>
@@ -96,7 +98,7 @@ export default function ChatBubble({ message }: { message: ChatMessage }) {
             `}
         >
           <Clock className="h-3 w-3" />
-          <span>{message.createdAt}</span>
+          <span>{formatDate(message.created_at)}</span>
 
           <span className="mx-1">•</span>
           <button

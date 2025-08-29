@@ -4,7 +4,7 @@ export interface ChatMessage {
   id: string;
   role: Role;
   content: string;
-  createdAt: string;
+  created_at: string;
 }
 
 export interface ConversationMeta {

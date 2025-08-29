@@ -1,38 +1,44 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Conversation, ConversationMeta } from "@/types/chat";
+import { ConversationMeta } from "@/types/chat";
 import {
   ChevronLeft,
   ChevronRight,
   Clock,
-  MoreVertical,
+  Edit3,
   Pin,
   Plus,
   Search,
+  Trash2,
 } from "lucide-react";
 import { motion } from "framer-motion";
 import { formatDate } from "@/utils/date/IsoToDate";
+import { useRouter } from "next/navigation";
 
 export default function Sidebar({
   open,
   onToggle,
   conversations,
   activeId,
-  createNew,
   select,
 }: {
   open: boolean;
   onToggle: () => void;
   conversations: ConversationMeta[];
   activeId?: string;
-  createNew: () => void;
   select: (id: string) => void;
 }) {
+  const router = useRouter();
+
+  const handleNewChat = () => {
+    router.push("/chat");
+  };
+
   const ConversationBlock = ({ c }: { c: ConversationMeta }) => {
     return (
       <button
         key={c.id}
-        onClick={() => select(c.id)}
+        onClick={() => router.push(`/chat/${c.id}`)}
         className={`
           w-full text-left rounded-lg border border-border/60 bg-background/60 hover:bg-primary/5 transition p-3 group
  ${activeId === c.id && "border-primary/40 bg-primary/5"}
@@ -43,27 +49,31 @@ export default function Sidebar({
           {c.pinned && <Pin className="h-3.5 w-3.5 text-primary" />}
           <div className="ml-auto flex items-center gap-1 opacity-0 group-hover:opacity-100 transition">
             {/* When user wants to edit the title of conversation */}
-            {/* <button
-              className="hover:text-foreground"
+            <div
+              className="hover:text-foreground cursor-pointer"
               title="Rename"
               aria-label="Rename"
+              onClick={() => select(c.id)}
+              role="button"
             >
               <Edit3 className="h-3.5 w-3.5" />
-            </button> */}
+            </div>
 
             {/* When user wants to delete the entire conversation along with its entire messages */}
-            {/* <button
-              className="hover:text-foreground"
+            <div
+              className="hover:text-foreground cursor-pointer"
               title="Delete"
               aria-label="Delete"
+              onClick={() => select(c.id)}
+              role="button"
             >
               <Trash2 className="h-3.5 w-3.5" />
-            </button> */}
+            </div>
           </div>
         </div>
         <div className="mt-1 flex items-center gap-2 text-xs text-muted-foreground">
           <Clock className="h-3 w-3" />
-          <span>{formatDate(c.updated_at)}</span>
+          <span className="truncate">{formatDate(c.updated_at)}</span>
         </div>
       </button>
     );
@@ -75,7 +85,7 @@ export default function Sidebar({
 
       <div
         className={`
-            hidden md:flex min-h-0 flex-col border-r border-border bg-card/40 transition-[width] duration-300 ease-out
+            hidden md:flex min-h-0 flex-col border-r border-border bg-card/40 transition-all duration-500 ease-out
             ${open ? "w-80" : "w-16"}
           `}
       >
@@ -103,7 +113,7 @@ export default function Sidebar({
             <Button
               size="sm"
               className={`gap-1  ${open ? "inline-flex" : "hidden"}`}
-              onClick={createNew}
+              onClick={handleNewChat}
             >
               <Plus className="h-4 w-4" /> New chat
             </Button>
@@ -144,7 +154,7 @@ export default function Sidebar({
           </Button>
           <div className="text-sm font-semibold tracking-wide">Chats</div>
           <div className="ml-auto">
-            <Button size="sm" className="gap-1" onClick={createNew}>
+            <Button size="sm" className="gap-1" onClick={handleNewChat}>
               <Plus className="h-4 w-4" /> New
             </Button>
           </div>
@@ -155,7 +165,7 @@ export default function Sidebar({
             <Input placeholder="Search conversations" className="pl-8 pr-2" />
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           </div>
-          <div className="space-y-2 flex flex-col flex-1 overflow-y-auto max-h-[90%] border border-black ">
+          <div className="space-y-2 flex flex-col flex-1 overflow-y-auto max-h-[90%] ">
             {conversations.map((c) => (
               <ConversationBlock key={c.id} c={c} />
             ))}

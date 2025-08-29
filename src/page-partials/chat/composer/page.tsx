@@ -7,7 +7,7 @@ import { useEffect, useRef, useState } from "react";
 export default function Composer({
   disabled,
   onSend,
-  suggestions,
+  suggestions = [],
 }: {
   disabled?: boolean;
   onSend: (text: string) => void;
@@ -37,7 +37,11 @@ export default function Composer({
   }
 
   return (
-    <div className="sticky bottom-0 left-0 right-0 bg-gradient-to-b from-background/60 to-background backdrop-blur supports-[backdrop-filter]:backdrop-blur border-t border-border">
+    <div
+      className="sticky bottom-0 left-0 right-0
+    bg-gradient-to-b from-background/60 to-background backdrop-blur supports-[backdrop-filter]:backdrop-blur
+    "
+    >
       <div className="mx-auto max-w-4xl px-3 py-3 space-y-3">
         {/* Smart suggestions */}
         {suggestions?.length > 0 && (
@@ -57,14 +61,14 @@ export default function Composer({
         <Card className="border border-primary/20 shadow-sm">
           <CardContent className="p-2">
             <div className="flex items-end gap-2">
-              <div className="hidden sm:flex items-center gap-1 px-2 pb-2 text-muted-foreground">
+              {/* <div className="hidden sm:flex items-center gap-1 px-2 pb-2 text-muted-foreground">
                 <Badge variant="secondary" className="rounded-md">
                   /ask
                 </Badge>
                 <Badge variant="secondary" className="rounded-md">
                   /summarize
                 </Badge>
-              </div>
+              </div> */}
               <div className="flex-1">
                 <textarea
                   ref={taRef}
@@ -77,7 +81,7 @@ export default function Composer({
                     }
                   }}
                   rows={1}
-                  placeholder="Ask anything… (Shift + Enter for new line)"
+                  placeholder="Ask your mufti anything…"
                   className="block w-full max-h-60 resize-none bg-transparent px-3 py-2 text-sm focus:outline-none"
                 />
               </div>
@@ -113,10 +117,10 @@ export default function Composer({
                 </Button>
               </div>
             </div>
-            <div className="flex items-center justify-between px-2 pt-1 text-[11px] text-muted-foreground">
+            {/* <div className="flex items-center justify-between px-2 pt-1 text-[11px] text-muted-foreground">
               <span>Shift + Enter = new line</span>
               <span>0 / 4,096 tokens (UI mock)</span>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
