@@ -11,11 +11,14 @@ import ChatBubble from "../chat-bubble/page";
 import Composer from "../composer/page";
 import toast from "react-hot-toast";
 import Image from "next/image";
-// import { useRouter } from "next/router";
+import { usePathname } from "next/navigation";
+import ChatPage from "../page";
 
-export default function ConversationPage({ activeId }: { activeId: string }) {
-  // const router = useRouter();
+interface Props {
+  initialChatId: string | null;
+}
 
+export default function ConversationPage({ initialChatId }: Props) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -23,6 +26,9 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
   const [isTyping, setIsTyping] = useState(false);
   const [currentTextIndex, setCurrentTextIndex] = useState(0);
   const [showScrollButton, setShowScrollButton] = useState(false);
+
+  const pathname = usePathname();
+  const [activeId, setActiveId] = useState<string | null>(initialChatId);
 
   const thinkingTexts = [
     "Reading authentic books…",
@@ -32,6 +38,11 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
     "Cross-checking with tafseer…",
     "Polishing the final answer…",
   ];
+
+  useEffect(() => {
+    const segments = pathname.split("/").filter(Boolean);
+    setActiveId(segments[1] || null);
+  }, [pathname]);
 
   useEffect(() => {
     const el = scrollRef.current;
@@ -65,13 +76,13 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
   useEffect(() => {
     if (!activeId) {
       console.log("Returning Beacuse no activeId");
+      setMessages([]);
       return;
     }
     getMessagesOfConversation(activeId);
   }, [activeId]);
 
   const getMessagesOfConversation = async (activeId: string) => {
-    console.log("get Messages of conversation");
     try {
       const data = await ChatServices.getMessagesOfConversation(activeId);
       if (data.length > 0) {
@@ -79,7 +90,6 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
       }
     } catch (err: any) {
       console.log(err);
-      toast(err.message);
     }
   };
 
@@ -101,17 +111,14 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
 
     const es = await ChatServices.streamChat(
       text,
-      activeId,
+      activeId || undefined,
       (conversation_id) => {
-        // New conversation created → navigate & start streaming
-        // router.push({
-        //   pathname: router.pathname,
-        //   query: { ...router.query, id: conversation_id },
-        // });
-        // setActiveId(conversation_id); // optional state if you track it locally
-        // es.close(); // close old connection if needed
+        if (!activeId) {
+          window.history.pushState({}, "", `/chat/${conversation_id}`);
+        }
       },
       (chunk) => {
+        console.log("CHUNK +> ", chunk);
         setStreamingContent((prev) => prev + chunk.content);
       },
       (fullText) => {
@@ -133,6 +140,10 @@ export default function ConversationPage({ activeId }: { activeId: string }) {
       });
     }
   };
+
+  if (!activeId) {
+    return <ChatPage onStartNewChat={onSend} />;
+  }
 
   return (
     <main

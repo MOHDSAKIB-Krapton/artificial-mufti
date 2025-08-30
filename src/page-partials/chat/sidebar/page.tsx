@@ -14,6 +14,8 @@ import {
 import { motion } from "framer-motion";
 import { formatDate } from "@/utils/date/IsoToDate";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import Modal from "@/components/common/modal";
 
 export default function Sidebar({
   open,
@@ -29,6 +31,8 @@ export default function Sidebar({
   select: (id: string) => void;
 }) {
   const router = useRouter();
+
+  const [deleteModalState, setDeleteModalState] = useState(false);
 
   const handleNewChat = () => {
     router.push("/chat");
@@ -64,7 +68,7 @@ export default function Sidebar({
               className="hover:text-foreground cursor-pointer"
               title="Delete"
               aria-label="Delete"
-              onClick={() => select(c.id)}
+              onClick={() => setDeleteModalState(true)}
               role="button"
             >
               <Trash2 className="h-3.5 w-3.5" />
@@ -173,13 +177,24 @@ export default function Sidebar({
         </div>
       </motion.div>
 
+      <Modal
+        isOpen={deleteModalState}
+        onClose={() => setDeleteModalState(false)}
+      >
+        <h2 className="text-xl font-bold">Delete Conversation</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          This action cannot be undone. Are you sure you want to delete this
+          conversation?
+        </p>
+      </Modal>
+
       <button
         onClick={onToggle}
         className={`md:hidden fixed inset-0 z-30 bg-black/30 transition-opacity
             ${open ? "opacity-100" : "pointer-events-none opacity-0"}
           `}
-        // aria-hidden={!open}
-        // inert={!open}
+        aria-hidden={!open}
+        inert={!open}
       />
     </>
   );

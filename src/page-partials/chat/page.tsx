@@ -2,21 +2,15 @@
 
 import { Bot } from "lucide-react";
 import Composer from "./composer/page";
-import ChatServices from "@/services/chat/chat.service";
-import { useRouter } from "next/navigation";
 
-export default function ChatPage() {
-  const router = useRouter();
-
-  const onSend = async (text: string) => {
-    ChatServices.streamChat(text, "", (conversation_id) => {
-      router.push(`/chat/${conversation_id}`);
-    });
-  };
-
+export default function ChatPage({
+  onStartNewChat,
+}: {
+  onStartNewChat: (text: string) => void;
+}) {
   return (
     <main className="min-h-0 flex flex-col flex-1 overflow-y-auto">
-      <div className="mx-auto mt-20 flex max-w-4xl flex-col items-center justify-center p-4">
+      <div className="mx-auto mt-6 flex max-w-4xl flex-col items-center justify-center p-4">
         <div className="flex flex-col items-center gap-4">
           <Bot className="h-16 w-16 text-primary" />
           <h1 className="text-3xl font-bold tracking-tight text-foreground">
@@ -29,7 +23,7 @@ export default function ChatPage() {
           <div
             className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
             onClick={() =>
-              onSend(
+              onStartNewChat(
                 "Summarize the main points of the chapter on Islamic history."
               )
             }
@@ -46,7 +40,7 @@ export default function ChatPage() {
           <div
             className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
             onClick={() =>
-              onSend("What is the significance of the Quran in Islam?")
+              onStartNewChat("What is the significance of the Quran in Islam?")
             }
           >
             <h3 className="text-base font-semibold text-foreground">
@@ -62,7 +56,7 @@ export default function ChatPage() {
           <div
             className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
             onClick={() =>
-              onSend("Provide a list of recommended books on Seerah.")
+              onStartNewChat("Provide a list of recommended books on Seerah.")
             }
           >
             <h3 className="text-base font-semibold text-foreground">
@@ -77,7 +71,9 @@ export default function ChatPage() {
           <div
             className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
             onClick={() =>
-              onSend("Explain the five pillars of Islam in simple terms.")
+              onStartNewChat(
+                "Explain the five pillars of Islam in simple terms."
+              )
             }
           >
             <h3 className="text-base font-semibold text-foreground">
@@ -91,7 +87,7 @@ export default function ChatPage() {
         </div>
       </div>
 
-      <Composer disabled={false} onSend={onSend} suggestions={[]} />
+      <Composer disabled={false} onSend={onStartNewChat} suggestions={[]} />
     </main>
   );
 }

@@ -64,17 +64,17 @@ export default class ChatServices {
       process.env.NEXT_PUBLIC_BACKEND_BASE_URL
     );
 
+    // Setting conversation id into the chat if not new chat
     if (conversationId) {
       url.searchParams.set("conversation_id", conversationId);
     }
 
+    // setting token in query params because native EventSource does not provides us header token access
     if (token) {
       url.searchParams.set("token", token);
     }
 
     const es = new EventSource(url.toString());
-
-    let fullText = "";
 
     es.addEventListener("conversation_created", (e) => {
       const parsed = JSON.parse((e as MessageEvent).data) as SseConversation;
@@ -83,14 +83,12 @@ export default class ChatServices {
 
     es.addEventListener("chunk", (e) => {
       const parsed = JSON.parse((e as MessageEvent).data) as SseChunk;
-      fullText += parsed.content;
       onChunk?.(parsed);
     });
 
     es.addEventListener("end", (e) => {
       const parsed = JSON.parse((e as MessageEvent).data) as SseChunk;
-      fullText += parsed.content;
-      onEnd?.(fullText);
+      onEnd?.(parsed.content);
       es.close();
     });
 

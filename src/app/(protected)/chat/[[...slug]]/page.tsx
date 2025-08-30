@@ -5,7 +5,6 @@ import { createMetaData } from "@/seo-utils/CommonMeta";
 import { organizationSchema } from "@/seo-utils/organizationSchema";
 import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
 import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
-import ChatPage from "@/page-partials/chat/page";
 import ConversationPage from "@/page-partials/chat/conversation/page";
 
 const url = `${HOST}`;
@@ -20,9 +19,11 @@ export const metadata = {
 export default async function Conversation({
   params,
 }: {
-  params: Promise<{ id: string }>;
+  params: Promise<{ slug: string[] }>;
 }) {
-  const { id } = await params;
+  const { slug } = await params;
+  const chatId = slug ? (slug.length > 0 ? slug[0] : null) : null;
+
   return (
     <>
       <script
@@ -43,7 +44,7 @@ export default async function Conversation({
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
       />
-      <ConversationPage activeId={id} />
+      <ConversationPage initialChatId={chatId} />
     </>
   );
 }
