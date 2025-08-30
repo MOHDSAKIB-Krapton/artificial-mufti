@@ -3,7 +3,7 @@ export const organizationSchema = () => {
     "@context": "http://schema.org",
     "@type": "Organization",
     name: "Artificial Mufti",
-    url: "https://www.artificial-mufti.vercel.app/",
+    url: "https://artificial-mufti.vercel.app/",
     contactPoint: [
       {
         "@type": "ContactPoint",
@@ -16,7 +16,7 @@ export const organizationSchema = () => {
         contactType: "Customer support",
       },
     ],
-    logo: "https://www.artificial-mufti.vercel.app/assets/custom_icons/logo-full.webp",
+    logo: "https://artificial-mufti.vercel.app/assets/custom_icons/logo-full.webp",
     sameAs: [
       "https://www.facebook.com/artificialmufti",
       "https://twitter.com/artificialmufti",
