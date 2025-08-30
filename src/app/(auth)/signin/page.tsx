@@ -4,7 +4,6 @@ import { signInWithGoogle } from "./action";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { motion } from "framer-motion";
 import { Sparkles } from "lucide-react";
 
 export default function LoginPage() {
@@ -16,7 +15,7 @@ export default function LoginPage() {
       setError(null);
       setLoading(true);
 
-      const redirectUrl = `${window.location.origin}/auth/callback?next=/profile`;
+      const redirectUrl = `${window.location.origin}/auth/callback?next=/chat`;
       const { url } = await signInWithGoogle(redirectUrl);
 
       if (url) {
@@ -36,12 +35,7 @@ export default function LoginPage() {
 
       <Card className="relative w-full max-w-md border-primary/20 bg-card/60 backdrop-blur">
         <CardContent className="p-8 space-y-6">
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.35 }}
-            className="text-center space-y-2"
-          >
+          <div className="text-center space-y-2">
             <div className="mx-auto w-14 h-14 rounded-2xl grid place-items-center bg-primary/10">
               <Sparkles className="h-6 w-6 text-primary" />
             </div>
@@ -51,7 +45,7 @@ export default function LoginPage() {
             <p className="text-muted-foreground text-sm">
               Continue with Google to sign in or sign up.
             </p>
-          </motion.div>
+          </div>
 
           {error && <p className="text-sm text-destructive">{error}</p>}
 
@@ -88,8 +82,12 @@ export default function LoginPage() {
 
           <p className="text-xs text-muted-foreground text-center">
             By continuing, you agree to our{" "}
-            <span className="underline">Terms</span> and{" "}
-            <span className="underline">Privacy Policy</span>.
+            <a href={"/terms"} title="Terms & Condition">
+              <span className="underline">Terms</span> and{" "}
+            </a>
+            <a href={"/terms"} title="Privacy Policy">
+              <span className="underline">Privacy Policy</span>.
+            </a>
           </p>
         </CardContent>
       </Card>

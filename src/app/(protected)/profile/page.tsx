@@ -1,54 +1,43 @@
-"use client";
+import { HOST } from "@/constants";
+import { comingSoonKeyword } from "@/data/keywords";
+import { webPageSchema } from "@/seo-utils/webPageSchema";
+import { createMetaData } from "@/seo-utils/CommonMeta";
+import { organizationSchema } from "@/seo-utils/organizationSchema";
+import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
+import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
+import ProfilePage from "@/page-partials/profile/page";
 
-import { useEffect, useState } from "react";
-import { User } from "@supabase/supabase-js";
-import { createClient } from "@/utils/supabase/client";
-import { redirect } from "next/navigation";
-import { logout } from "@/app/(auth)/signin/action";
+const url = `${HOST}`;
+const title = `Profile | Artificial Mufti`;
+const description = `Manage your account on Artificial Mufti, your intelligent companion for Islamic guidance. Update your personal details, review security settings, customize preferences, and control your data and notifications. Keep your profile secure and tailored while enjoying thoughtful, humorous, and well-referenced answers whenever you return.`;
+const keywords = comingSoonKeyword;
 
-export default function Profile() {
-  const supabase = createClient();
+export const metadata = {
+  ...createMetaData({ title, description, keywords, url }),
+};
 
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
-
-  useEffect(() => {
-    const fetchUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-      setLoading(false);
-    };
-
-    fetchUser();
-  }, []);
-
-  const handleSignOut = async () => {
-    try {
-      setLoading(true);
-      await logout();
-
-      setUser(null);
-      redirect("/");
-    } catch (err) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
-    return <p>Loading...</p>;
-  }
-
-  if (!user) {
-    return <p>Logged out</p>;
-  }
-
+export default function Chat() {
   return (
-    <div className="min-h-screen justify-center items-center flex flex-1 flex-col">
-      <p>Signed in as {user.email}</p>
-      <button onClick={handleSignOut}>Sign Out</button>
-    </div>
+    <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: webPageSchema(title, description, url),
+        }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: organizationSchema() }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: siteNavigationElement() }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
+      />
+      <ProfilePage />
+    </>
   );
 }

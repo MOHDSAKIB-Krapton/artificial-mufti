@@ -413,7 +413,15 @@ export default function TermsAndConditionsPage() {
                   procedures:
                 </p>
                 <ol className="space-y-2 text-sm">
-                  <li>1. Written complaint to disputes@artificialmufti.com</li>
+                  <li>
+                    1. Written complaint to{" "}
+                    <a
+                      href="mailto:support@artificialmufti.com"
+                      className="text-primary hover:text-primary/80"
+                    >
+                      {EMAIL}
+                    </a>
+                  </li>
                   <li>2. 30-day informal mediation period</li>
                   <li>3. Scholar-based arbitration if unresolved</li>
                   <li>4. Final determination by Islamic finance arbiter</li>

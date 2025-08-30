@@ -141,3 +141,24 @@ h5 {
 h6 {
   font-size: 1.25rem;
 }
+
+
+/* Hide scrollbar for Chrome, Safari and Edge */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for Firefox */
+html {
+  scrollbar-width: none;
+  /* Firefox */
+  -ms-overflow-style: none;
+  /* IE/Edge legacy */
+
+  scroll-behavior: smooth;
+
+}
+
+* {
+  /* border: 1px solid red */
+}
