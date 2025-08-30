@@ -5,18 +5,25 @@ import { createMetaData } from "@/seo-utils/CommonMeta";
 import { organizationSchema } from "@/seo-utils/organizationSchema";
 import { siteNavigationElement } from "@/seo-utils/siteNavigationElement";
 import { breadCrumbSchema } from "@/seo-utils/breadCrumbSchema";
-import ProfilePage from "@/page-partials/profile/page";
+import ConversationPage from "@/page-partials/chat/conversation/page";
 
 const url = `${HOST}`;
-const title = `Profile | Artificial Mufti`;
-const description = `Manage your account on Artificial Mufti, your intelligent companion for Islamic guidance. Update your personal details, review security settings, customize preferences, and control your data and notifications. Keep your profile secure and tailored while enjoying thoughtful, humorous, and well-referenced answers whenever you return.`;
+const title = `Conversation | Artificial Mufti`;
+const description = `Welcome to Artificial Mufti, your intelligent chat companion for Islamic guidance. Explore past conversations, ask new questions, and receive thoughtful, humorous, and well-referenced answers. Whether you're revisiting your chat history or starting fresh, the future of digital Islamic learning is here.`;
 const keywords = comingSoonKeyword;
 
 export const metadata = {
   ...createMetaData({ title, description, keywords, url }),
 };
 
-export default function Chat() {
+export default async function Conversation({
+  params,
+}: {
+  params: Promise<{ slug: string[] }>;
+}) {
+  const { slug } = await params;
+  const chatId = slug ? (slug.length > 0 ? slug[0] : null) : null;
+
   return (
     <>
       <script
@@ -37,7 +44,7 @@ export default function Chat() {
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: breadCrumbSchema(title, HOST, url) }}
       />
-      <ProfilePage />
+      <ConversationPage initialChatId={chatId} />
     </>
   );
 }

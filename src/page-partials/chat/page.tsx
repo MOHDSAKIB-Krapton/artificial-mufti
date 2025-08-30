@@ -1,207 +1,93 @@
 "use client";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Bot, ChevronLeft, ChevronRight, Loader2, Menu } from "lucide-react";
-import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
-import { Conversation, ConversationMeta, Role } from "@/types/chat";
-import { MOCK_CONVERSATIONS } from "@/data/mock";
-import Sidebar from "./sidebar/page";
-import ChatBubble from "./chat-bubble/page";
+import { Bot } from "lucide-react";
 import Composer from "./composer/page";
 
-export default function ProtectedChatPage() {
-  const [sidebarOpen, setSidebarOpen] = useState(false); // mobile drawer
-  const [sidebarPinned, setSidebarPinned] = useState(true); // desktop width state
-  const [conversations, setConversations] = useState<Conversation[]>(
-    () => MOCK_CONVERSATIONS
-  );
-  const [activeId, setActiveId] = useState<string>(conversations[0]?.id ?? "");
-  const active = useMemo(
-    () => conversations.find((c) => c.id === activeId)!,
-    [activeId, conversations]
-  );
-
-  // Derived meta for sidebar
-  const sidebarList = useMemo<ConversationMeta[]>(
-    () =>
-      conversations
-        .map(({ id, title, updatedAt, pinned }) => ({
-          id,
-          title,
-          updatedAt,
-          pinned,
-        }))
-        .sort((a, b) => Number(!!b.pinned) - Number(!!a.pinned)),
-    [conversations]
-  );
-
-  const addMessage = (role: Role, content: string) => {
-    setConversations((prev) =>
-      prev.map((c) =>
-        c.id !== activeId
-          ? c
-          : {
-              ...c,
-              updatedAt: "Just now",
-              messages: [
-                ...c.messages,
-                {
-                  id: crypto.randomUUID(),
-                  role,
-                  content,
-                  createdAt: new Date().toLocaleTimeString([], {
-                    hour: "numeric",
-                    minute: "2-digit",
-                  }),
-                },
-              ],
-            }
-      )
-    );
-  };
-
-  const createNew = () => {
-    const id = crypto.randomUUID();
-    const newConv: Conversation = {
-      id,
-      title: "New chat",
-      updatedAt: "Just now",
-      messages: [
-        {
-          id: crypto.randomUUID(),
-          role: "assistant",
-          content:
-            "Assalamu alaikum! I'm your AI companion. Ask anything—this is a demo UI, no real API calls.",
-          createdAt: new Date().toLocaleTimeString([], {
-            hour: "numeric",
-            minute: "2-digit",
-          }),
-        },
-      ],
-    };
-    setConversations((prev) => [newConv, ...prev]);
-    setActiveId(id);
-  };
-
-  const onSend = (text: string) => {
-    addMessage("user", text);
-    // Optional UI-only mock reply
-    setTimeout(() => {
-      addMessage(
-        "assistant",
-        "(Mock) Thanks for your question. In production, this would call your backend."
-      );
-    }, 500);
-  };
-
+export default function ChatPage({
+  onStartNewChat,
+}: {
+  onStartNewChat: (text: string) => void;
+}) {
   return (
-    <div className="max-h-[100dvh] self-stretch w-full flex flex-col bg-background text-foreground">
-      <div className="sticky top-0 z-20 border-b border-border bg-background/80 backdrop-blur supports-[backdrop-filter]:backdrop-blur">
-        <div className="mx-auto flex w-full items-center gap-2 px-3 py-6">
-          <Button
-            variant="ghost"
-            size="icon"
-            className="md:hidden"
-            onClick={() => setSidebarOpen((s) => !s)}
-            aria-label="Open sidebar"
+    <main className="min-h-0 flex flex-col flex-1 overflow-y-auto">
+      <div className="mx-auto mt-6 flex max-w-4xl flex-col items-center justify-center p-4">
+        <div className="flex flex-col items-center gap-4">
+          <Bot className="h-16 w-16 text-primary" />
+          <h1 className="text-3xl font-bold tracking-tight text-foreground">
+            How can I help you today?
+          </h1>
+        </div>
+
+        <div className="mt-12 w-full grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {/* Example Prompt 1 */}
+          <div
+            className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
+            onClick={() =>
+              onStartNewChat(
+                "Summarize the main points of the chapter on Islamic history."
+              )
+            }
           >
-            <Menu className="h-5 w-5" />
-          </Button>
-
-          <div className="hidden md:block">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => setSidebarPinned((p) => !p)}
-              aria-label="Toggle sidebar width"
-            >
-              {sidebarPinned ? (
-                <ChevronLeft className="h-5 w-5" />
-              ) : (
-                <ChevronRight className="h-5 w-5" />
-              )}
-            </Button>
+            <h3 className="text-base font-semibold text-foreground">
+              Summarize a document
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Quickly get a summary of a text or document with key takeaways.
+            </p>
           </div>
 
-          <div className="flex items-center gap-2 text-sm">
-            <Badge variant="secondary" className="rounded-md">
-              Protected
-            </Badge>
-            <span className="text-muted-foreground">/</span>
-            <span
-              className="font-medium truncate max-w-[40vw] md:max-w-xs"
-              title={active?.title}
-            >
-              {active?.title}
-            </span>
+          {/* Example Prompt 2 */}
+          <div
+            className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
+            onClick={() =>
+              onStartNewChat("What is the significance of the Quran in Islam?")
+            }
+          >
+            <h3 className="text-base font-semibold text-foreground">
+              Ask a complex question
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Explore in-depth topics and receive well-researched, detailed
+              answers.
+            </p>
           </div>
 
-          {/* <div className="ml-auto flex items-center gap-1">
-            <Button variant="ghost" size="sm" className="gap-1">
-              <Download className="h-4 w-4" /> Export
-            </Button>
-            <Button variant="ghost" size="sm" className="gap-1">
-              <Trash2 className="h-4 w-4" /> Clear
-            </Button>
-            <Button variant="default" size="sm" className="gap-1">
-              <Sparkles className="h-4 w-4" /> New chat
-            </Button>
-          </div> */}
+          {/* Example Prompt 3 */}
+          <div
+            className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
+            onClick={() =>
+              onStartNewChat("Provide a list of recommended books on Seerah.")
+            }
+          >
+            <h3 className="text-base font-semibold text-foreground">
+              Get a recommended list
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Receive curated lists of books, resources, or action steps.
+            </p>
+          </div>
+
+          {/* Example Prompt 4 */}
+          <div
+            className="group cursor-pointer rounded-xl border bg-card/50 p-4 transition-colors hover:bg-card"
+            onClick={() =>
+              onStartNewChat(
+                "Explain the five pillars of Islam in simple terms."
+              )
+            }
+          >
+            <h3 className="text-base font-semibold text-foreground">
+              Explain a concept
+            </h3>
+            <p className="mt-1 text-sm text-muted-foreground">
+              Break down complicated topics into easy-to-understand
+              explanations.
+            </p>
+          </div>
         </div>
       </div>
 
-      <div className="flex flex-1 min-h-0">
-        <Sidebar
-          open={sidebarOpen}
-          onToggle={() => setSidebarOpen((s) => !s)}
-          conversations={sidebarList}
-          activeId={activeId}
-          createNew={createNew}
-          select={setActiveId}
-        />
-
-        <main className="min-h-0 flex flex-col flex-1 overflow-y-auto">
-          {/* Conversation stream */}
-          <div className="mx-auto w-full max-w-4xl flex-1 px-3 pt-6 pb-24">
-            {active.messages.length === 0 && (
-              <div className="mx-auto mt-10 max-w-md text-center text-muted-foreground">
-                <Bot className="mx-auto mb-2 h-8 w-8 text-primary" />
-                <p>Start your first question below.</p>
-              </div>
-            )}
-
-            <div className="space-y-5">
-              {active.messages.map((m) => (
-                <motion.div
-                  key={m.id}
-                  initial={{ opacity: 0, y: 8 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.18 }}
-                >
-                  <ChatBubble message={m} />
-                </motion.div>
-              ))}
-              <div className="hidden" aria-hidden>
-                <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" /> Generating…
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <Composer
-            disabled={false}
-            onSend={onSend}
-            suggestions={[
-              "Summarize with sources",
-              "Add ayah reference",
-              "List action steps",
-            ]}
-          />
-        </main>
-      </div>
-    </div>
+      <Composer disabled={false} onSend={onStartNewChat} suggestions={[]} />
+    </main>
   );
 }
