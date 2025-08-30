@@ -88,7 +88,6 @@ export default function ProfilePage() {
     try {
       setDeleting(true);
       const response = await ProfileServices.deleteAccount();
-      console.log("response => ", response);
       setDeleting(false);
       await handleSignOut();
     } catch (err) {

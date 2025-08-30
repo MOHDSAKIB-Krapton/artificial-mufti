@@ -75,7 +75,6 @@ export default function ConversationPage({ initialChatId }: Props) {
 
   useEffect(() => {
     if (!activeId) {
-      console.log("Returning Beacuse no activeId");
       setMessages([]);
       return;
     }
@@ -118,7 +117,6 @@ export default function ConversationPage({ initialChatId }: Props) {
         }
       },
       (chunk) => {
-        console.log("CHUNK +> ", chunk);
         setStreamingContent((prev) => prev + chunk.content);
       },
       (fullText) => {
