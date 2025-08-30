@@ -3,10 +3,49 @@ import "./globals.css";
 import Script from "next/script";
 import ErrorReporter from "@/components/ErrorReporter";
 import { Toaster } from "react-hot-toast";
+import { HOST } from "@/constants";
 
 export const metadata: Metadata = {
-  title: "Artificial Mufti",
-  description: "Make your Islamic decisions easier with AI",
+  title: {
+    template: "%s | Artificial Mufti",
+    default: "Artificial Mufti - AI-powered Islamic Guidance",
+  },
+  description:
+    "Make your Islamic decisions easier with AI. Artificial Mufti provides accurate, AI-generated Islamic guidance and fatwas based on authentic sources.",
+  keywords: [
+    "Artificial Mufti",
+    "AI",
+    "Islamic decisions",
+    "fatwa",
+    "Islamic guidance",
+    "Fiqh",
+    "halal",
+    "haram",
+    "Islam",
+  ],
+  alternates: {
+    canonical: HOST,
+  },
+  openGraph: {
+    title: "Artificial Mufti - AI-powered Islamic Guidance",
+    description:
+      "Make your Islamic decisions easier with AI. Get guidance on Fiqh, halal, and more.",
+    url: HOST,
+    siteName: "Artificial Mufti",
+    images: [{ url: `${HOST}/images/og-image.png` }],
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Artificial Mufti",
+    description: "Get AI-powered Islamic guidance and fatwas.",
+    images: [`${HOST}/images/twitter-image.png`],
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({
