@@ -37,10 +37,6 @@ export async function middleware(request: NextRequest) {
     "/pricing",
     "/product",
     "/terms",
-
-    // // TESTING ONLY
-    // "/chat",
-    // "/profile",
   ];
   const isPublicRoute = publicRoutes.includes(pathname);
 
@@ -55,11 +51,11 @@ export async function middleware(request: NextRequest) {
 
     return NextResponse.next();
   }
-  // if (!isPublicRoute && !user) {
-  //   const url = request.nextUrl.clone();
-  //   url.pathname = "/signin";
-  //   return NextResponse.redirect(url);
-  // }
+  if (!isPublicRoute && !user) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/signin";
+    return NextResponse.redirect(url);
+  }
 
   return response;
 }
