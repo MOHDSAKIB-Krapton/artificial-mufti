@@ -1,0 +1,8 @@
+# Tell all crawlers to crawl your site
+User-agent: *
+
+# Allow everything by default
+Allow: /
+
+# Link to your sitemap file
+Sitemap: https://www.artificialmufti.com/sitemap.xml

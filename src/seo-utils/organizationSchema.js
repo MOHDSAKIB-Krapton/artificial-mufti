@@ -22,7 +22,7 @@ export const organizationSchema = () => {
       "https://twitter.com/artificialmufti",
       "https://www.linkedin.com/company/artificialmufti",
       "https://www.instagram.com/artificialmufti/",
-      // 'https://www.youtube.com/channel/UCeWZORQW4uJZbVS_4zarSig', Add youtube channel here if available
+      "https://www.youtube.com/@artificialmufti",
     ],
   });
 };
