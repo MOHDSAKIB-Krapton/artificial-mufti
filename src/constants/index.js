@@ -1,4 +1,4 @@
-export const HOST = "https://www.artificial-mufti.vercel.app";
+export const HOST = "https://artificial-mufti.vercel.app";
 export const APP_TITLE = "Artificial Mufti";
 
 // Social media links.
