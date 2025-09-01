@@ -39,9 +39,11 @@ const ChatPageLayout = ({ children }: { children: React.ReactNode }) => {
       setUser(user);
       setLoading(false);
 
+      console.log("User =>", user);
       if (error) {
         toast(error.message);
       }
+      console.log("Fetched user:", user?.user_metadata.avatar_url);
     };
     fetchUser();
   }, []);
@@ -98,15 +100,12 @@ const ChatPageLayout = ({ children }: { children: React.ReactNode }) => {
             </Button>
             </div> */}
 
-            <Link href={"/profile"} title="Profile" aria-label="Profile">
+            <a href={"/profile"} title="Profile" aria-label="Profile">
               <Avatar className="h-9 w-9 border">
-                <AvatarImage
-                  src={user.user_metadata?.avatar_url}
-                  alt="Avatar"
-                />
+                <AvatarImage src={user.user_metadata.avatar_url} alt="Avatar" />
                 <AvatarFallback>{initials}</AvatarFallback>
               </Avatar>
-            </Link>
+            </a>
           </div>
         </div>
 

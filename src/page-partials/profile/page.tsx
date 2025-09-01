@@ -21,9 +21,11 @@ export default function ProfilePage() {
   const [user, setUser] = useState<User | null>(null);
   const [fullName, setFullName] = useState("");
   const [mobile, setMobile] = useState("");
+
   const [loading, setLoading] = useState<boolean>(true);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [loggingOut, setLoggingOut] = useState(false);
 
   // UI toggles (client-side only; wire up as needed)
   // const [notifEmail, setNotifEmail] = useState(true);
@@ -61,11 +63,11 @@ export default function ProfilePage() {
 
   const handleSignOut = async () => {
     try {
-      // setLoading(true);
+      setLoggingOut(true);
       await logout();
     } catch {
     } finally {
-      setLoading(false);
+      setLoggingOut(false);
     }
   };
 
@@ -469,7 +471,13 @@ export default function ProfilePage() {
                     className="gap-2"
                     onClick={handleSignOut}
                   >
-                    <LogOut className="h-4 w-4" />
+                    {loggingOut ? (
+                      <>
+                        <div className="h-4 w-4 rounded-full border-4 border-primary/30 border-t-white border-l-white border-b-white animate-spin" />
+                      </>
+                    ) : (
+                      <LogOut className="h-4 w-4" />
+                    )}
                     Sign out
                   </Button>
                 </div>
