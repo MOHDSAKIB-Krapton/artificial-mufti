@@ -51,10 +51,10 @@ export default function SimpleCentered() {
                 Start Asking Questions
               </a>
               <a
-                href="/product"
+                href="/android-app-download"
                 className="text-sm/6 font-semibold text-[var(--foreground)] flex justify-center items-center gap-x-2"
               >
-                Explore Features{" "}
+                Download App{" "}
                 <span aria-hidden="true" className="hidden sm:block">
                   →
                 </span>
