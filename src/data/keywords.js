@@ -4,3 +4,4 @@ export const termsAndConditionsKeyword = `Artificial Mufti terms, terms and cond
 export const pricingKeyword = `Artificial Mufti pricing, subscription plans, AI Mufti cost, free trial, premium access, Islamic guidance plans, pricing details`;
 export const productKeyword = `Artificial Mufti, AI Mufti, Islamic guidance, ask a mufti, online fatwa, digital Islamic companion, Muslim AI, Islamic Q&A platform, Islamic knowledge, religious questions`;
 export const contactKeyword = `Artificial Mufti contact, support, get in touch, feedback, email, partnership, questions, contact us`;
+export const androidAppDownloadKeyword = `Artificial Mufti APK, download Artificial Mufti, Islamic AI assistant APK, Android Islamic app, privacy-first Islamic app, offline Islamic guidance, prayer times app, Qibla direction app, lightweight Islamic app, free Islamic AI assistant`;
