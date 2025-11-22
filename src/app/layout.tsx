@@ -4,6 +4,7 @@ import Script from "next/script";
 import ErrorReporter from "@/components/ErrorReporter";
 import { Toaster } from "react-hot-toast";
 import { HOST } from "@/constants";
+import { Analytics } from '@vercel/analytics/next';
 
 export const metadata: Metadata = {
   title: {
@@ -75,6 +76,7 @@ export default function RootLayout({
         />
         <Toaster />
         {children}
+        <Analytics />
       </body>
     </html>
   );
