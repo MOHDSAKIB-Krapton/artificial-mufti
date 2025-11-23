@@ -37,7 +37,7 @@ export async function middleware(request: NextRequest) {
     "/pricing",
     "/product",
     "/terms",
-    "/android-app-download",
+    "/app-download",
   ];
   const isPublicRoute = publicRoutes.includes(pathname);
 
