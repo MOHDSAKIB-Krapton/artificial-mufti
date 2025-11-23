@@ -51,7 +51,7 @@ export default function SimpleCentered() {
                 Start Asking Questions
               </a>
               <a
-                href="/android-app-download"
+                href="/app-download"
                 className="text-sm/6 font-semibold text-[var(--foreground)] flex justify-center items-center gap-x-2"
               >
                 Download App{" "}

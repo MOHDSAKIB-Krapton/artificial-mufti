@@ -11,10 +11,15 @@ import {
   Zap,
   ChevronDown,
   CheckCircle2,
+  Sparkles,
+  Activity,
+  Laptop,
+  Apple,
+  Phone,
 } from "lucide-react";
 import React from "react";
 
-const AndroidAppDownload = ({ release }: any) => {
+const AppDownload = ({ release }: any) => {
   const features = [
     {
       icon: <Zap className="w-6 h-6" />,
@@ -53,10 +58,12 @@ const AndroidAppDownload = ({ release }: any) => {
   return (
     <main className="min-h-screen font-sans bg-background text-foreground selection:bg-primary/20">
       {/* Hero Section */}
-      <section className="relative pt-20 pb-32 overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-background via-card/50 to-background pointer-events-none" />
+      <section className="relative pt-24 pb-32 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-background via-card/40 to-background pointer-events-none" />
 
         <div className="relative max-w-7xl mx-auto px-6 lg:px-8 text-center z-10">
+
+          {/* Preview Tag */}
           {release.prerelease && (
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-8 animate-in fade-in slide-in-from-bottom-4 duration-700">
               <span className="relative flex h-2 w-2">
@@ -67,6 +74,7 @@ const AndroidAppDownload = ({ release }: any) => {
             </div>
           )}
 
+          {/* Title */}
           <h1 className="font-serif text-5xl lg:text-7xl font-bold leading-tight tracking-tight mb-6 animate-in fade-in slide-in-from-bottom-6 duration-700 delay-100">
             Artificial Mufti
             <span className="block text-2xl lg:text-3xl text-muted-foreground font-sans font-normal mt-4 tracking-normal">
@@ -74,34 +82,90 @@ const AndroidAppDownload = ({ release }: any) => {
             </span>
           </h1>
 
-          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-10 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
-            Designed to provide fast, referenced answers to your questions.
-            Currently in early access — help us shape the future of Islamic AI.
+          <p className="text-lg text-muted-foreground max-w-2xl mx-auto mb-12 leading-relaxed animate-in fade-in slide-in-from-bottom-8 duration-700 delay-200">
+            Designed for accurate, referenced Islamic answers — privacy-friendly, fast, and
+            built to serve Muslims worldwide. Now available for early access.
           </p>
 
-          <div className="flex flex-col items-center gap-6 animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
-            <a
-              href={release.downloadUrl}
-              className="group relative inline-flex items-center gap-3 px-8 py-4 bg-primary text-primary-foreground text-lg font-semibold rounded-full shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-300"
-            >
-              <Download className="w-5 h-5 group-hover:animate-bounce" />
-              Download APK
-              <span className="opacity-70 font-normal text-sm ml-1">v{release.version}</span>
-            </a>
+          {/* PLATFORM CARDS */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto animate-in fade-in slide-in-from-bottom-10 duration-700 delay-300">
 
-            <div className="flex items-center gap-4 text-sm text-muted-foreground bg-card/50 px-4 py-2 rounded-full border border-border/50 backdrop-blur-sm">
-              <span className="flex items-center gap-1.5">
-                <FileCheck className="w-4 h-4 text-green-600" />
-                {release.sizeMB}
-              </span>
-              <span className="w-px h-4 bg-border" />
-              <span>Updated {new Date(release.updated).toISOString().split("T")[0]}</span>
-              <span className="w-px h-4 bg-border" />
-              <span>{release.downloadCount + 200}+ Downloads</span>
+            {/* ANDROID */}
+            <div className="p-6 bg-card rounded-2xl hover:shadow-sm transition-all duration-300 relative">
+              <div className="flex flex-col items-center text-center gap-3">
+                <Smartphone className="w-10 h-10 text-primary" />
+                <h3 className="text-xl font-semibold">Android APK</h3>
+                <p className="text-muted-foreground text-sm">
+                  Latest version available for direct APK installation.
+                </p>
+
+                <a
+                  href={release.downloadUrl}
+                  className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-primary text-primary-foreground rounded-full font-semibold shadow hover:scale-105 transition-all"
+                >
+                  <Download className="w-5 h-5" />
+                  Download APK
+                </a>
+
+                <p className="text-xs text-muted-foreground mt-3">
+                  v{release.version} • Updated {new Date(release.updated).toISOString().split("T")[0]}
+                </p>
+              </div>
+            </div>
+
+            {/* IOS (Coming Soon) */}
+            <div className="p-6 bg-card rounded-2xl opacity-50 pointer-events-none">
+              <div className="flex flex-col items-center text-center gap-3">
+                <Apple className="w-10 h-10" />
+                <h3 className="text-xl font-semibold">iOS</h3>
+                <p className="text-muted-foreground text-sm">
+                  iPhone version is under development and will be available soon.
+                </p>
+
+                <div className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-muted text-muted-foreground rounded-full font-semibold">
+                  Coming Soon
+                </div>
+              </div>
+            </div>
+
+            {/* DESKTOP (Coming Soon) */}
+            <div className="p-6 bg-card rounded-2xl opacity-50 pointer-events-none">
+              <div className="flex flex-col items-center text-center gap-3">
+                <Laptop className="w-10 h-10" />
+                <h3 className="text-xl font-semibold">Desktop App</h3>
+                <p className="text-muted-foreground text-sm">
+                  Windows & macOS native apps will arrive in future releases.
+                </p>
+
+                <div className="mt-4 inline-flex items-center gap-2 px-6 py-3 bg-muted text-muted-foreground rounded-full font-semibold">
+                  Coming Soon
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* STATS BAR */}
+          <div className="mt-12 flex flex-wrap justify-center gap-6 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Shield className="w-4 h-4" />
+              100% Private — No Tracking
+            </div>
+            <div className="w-px h-4 bg-border" />
+            <div className="flex items-center gap-2">
+              <Sparkles className="w-4 h-4" />
+              Referenced Islamic Answers
+            </div>
+            <div className="w-px h-4 bg-border" />
+            <div className="flex items-center gap-2">
+              <Activity className="w-4 h-4" />
+              Fast, Lightweight & Reliable
             </div>
           </div>
+
         </div>
       </section>
+
 
       {/* Features Grid */}
       <section className="py-20 px-6 lg:px-8 bg-card/30 rounded-xl">
@@ -170,43 +234,6 @@ const AndroidAppDownload = ({ release }: any) => {
               </div>
             </div>
 
-            <div className="space-y-6">
-              <div className="p-6 bg-card rounded-2xl border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <Smartphone className="w-5 h-5 text-primary" />
-                  <h4 className="font-semibold">System Requirements</h4>
-                </div>
-                <ul className="space-y-3 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> Android 6.0 (Marshmallow) or newer
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> ~{release.sizeMB} MB free storage space
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> Internet connection for AI features
-                  </li>
-                </ul>
-              </div>
-
-              <div className="p-6 bg-card rounded-2xl border border-border">
-                <div className="flex items-center gap-3 mb-4">
-                  <Shield className="w-5 h-5 text-green-600" />
-                  <h4 className="font-semibold">Safety & Security</h4>
-                </div>
-                <ul className="space-y-3 text-sm text-muted-foreground">
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> Clean APK (Scan with VirusTotal)
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> Minimal permissions required
-                  </li>
-                  <li className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-green-600" /> Privacy-first data handling
-                  </li>
-                </ul>
-              </div>
-            </div>
           </div>
         </div>
       </section>
@@ -248,4 +275,4 @@ const AndroidAppDownload = ({ release }: any) => {
   );
 };
 
-export default AndroidAppDownload;
+export default AppDownload;
